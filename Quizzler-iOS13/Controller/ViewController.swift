@@ -11,54 +11,53 @@ import UIKit
 class ViewController: UIViewController {
     
     
-    let quiz = [
-        ["Four + two is equal to six", "True"],
-        ["Five - Three is greater than One", "True"],
-        ["Three + Eight is less than Ten", "False"]
-    ]
-    
-    
-    var questionNumber = 0
-    
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
-    
-    
     @IBOutlet weak var trueButton: UIButton!
     @IBOutlet weak var falseButton: UIButton!
     
-    
+    var quizBrain = QuizBrain()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         updateUI()
-        
     }
-
+    
+    
+    
+    
     @IBAction func answerButtonPressed(_ sender: UIButton) {
         
         let userAnswer = sender.currentTitle
-        let actualAnswer = quiz[questionNumber][1]
         
+        quizBrain.checkAnswer(userAnswer)
+    
+    
         if userAnswer == actualAnswer {
+            sender.backgroundColor = UIColor.green
             print("right!")
         }else {
+            sender.backgroundColor = UIColor.red
             print("wrong!")
         }
         
+        
         if questionNumber + 1 < quiz.count{
             questionNumber += 1
-            
         }else {
             questionNumber = 0
         }
-        updateUI()
+        
+        Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
+        
         
     }
     
-    func updateUI() {
-        questionLabel.text = quiz[questionNumber][0]
+    @objc func updateUI() {
+        questionLabel.text = quiz[questionNumber].text
+        trueButton.backgroundColor = UIColor.clear
+        falseButton.backgroundColor = UIColor.clear
+        progressBar.progress = Float(questionNumber + 1) / Float(quiz.count)
     }
     
     
